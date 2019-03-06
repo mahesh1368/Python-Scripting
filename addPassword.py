@@ -7,6 +7,45 @@ import os
 import sys
 import csv
 import pandas as pd
+import pyminizip
+import getpass
+import zipfile
+
+# Check if zip folder exists
+def checkZipFileExists(zip_file):
+	if os.path.exists(zip_file):
+		return True
+	return False
+
+def checkFileExists(file_name):
+	if os.path.exists(file_name):
+		if os.path.isfile(file_name):
+			return True
+		else:
+			return False
+	return False
+
+def createFile(file_name):
+	if checkFileExists(file_name):
+		print("File already exists.")
+		return
+	file = open(file_name, 'w')
+	row = ['account', 'password']
+	writer = csv.writer(file)
+	writer.writerow(row)
+	file.close()
+
+# Initialize the files if they don't exist.
+def initialize(file_name, zip_file):
+	if (not checkFileExists(file_name)) and (not checkZipFileExists(zip_file)):
+		print("First time, creating new file.")
+		createFile(file_name)
+
+	if checkZipFileExists(zip_file):
+		print("ZIP folder exists, uncompressing the folder.")
+		pwd = bytes(getpass.getpass("Enter password for zip file: "), 'utf-8')
+		zFile = zipfile.ZipFile(zip_file)
+		zFile.extractall(pwd=pwd)
 
 # Check and create if file_name file do not exists
 def checkFileExistsAndCreate(file_name):
@@ -75,10 +114,19 @@ def addPwField(file_name, pwField):
 		writer.writerow(pwField)
 		file.close()
 		print('Password to %s account added'%pwField[0])
-	
+
+def setPassword(file_name):
+	print("Compressing file.")
+	compress_level = 2
+	password = getpass.getpass("Enter password for zip file: ")
+	pyminizip.compress(file_name, './', 'passwordZip.zip', password, compress_level)
+
 def main():
+	zip_file = 'passwordZip.zip'
 	file_name = 'passwords.csv'
-	checkFileExistsAndCreate(file_name)
+	#checkFileExistsAndCreate(file_name)
+
+	initialize(file_name, zip_file)
 
 	if len(sys.argv) != 3:
 		print("Usage command: addPassword.py account_name password")
@@ -90,6 +138,10 @@ def main():
 		addPwField(file_name, pwField)
 		print("Password field is added.")
 
+	setPassword(file_name)
+
+	# Now remove the file that's been zipped.
+	os.remove(file_name)
 
 if __name__ == '__main__':
 	main()
