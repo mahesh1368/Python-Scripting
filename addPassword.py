@@ -35,6 +35,7 @@ def createFile(file_name):
 	writer.writerow(row)
 	file.close()
 
+
 # Initialize the files if they don't exist.
 def initialize(file_name, zip_file):
 	if (not checkFileExists(file_name)) and (not checkZipFileExists(zip_file)):
@@ -43,9 +44,26 @@ def initialize(file_name, zip_file):
 
 	if checkZipFileExists(zip_file):
 		print("ZIP folder exists, uncompressing the folder.")
-		pwd = bytes(getpass.getpass("Enter password for zip file: "), 'utf-8')
-		zFile = zipfile.ZipFile(zip_file)
-		zFile.extractall(pwd=pwd)
+		attempts = 0
+
+		print("Enter password for zip file:")
+		while(attempts < 3):
+			if attempts == 2:
+				print("Maximum attempts exceeded")
+				exit(1)
+			pwd = bytes(getpass.getpass("Password: "), 'utf-8')
+			zFile = zipfile.ZipFile(zip_file)
+
+			try:
+				print("Inside TRY")
+				zFile.extractall(pwd = pwd)
+				break
+			except RuntimeError:
+				print("incorrect password. Please try again.")
+
+			attempts += 1
+		
+		
 
 # Check and create if file_name file do not exists
 def checkFileExistsAndCreate(file_name):
@@ -118,8 +136,25 @@ def addPwField(file_name, pwField):
 def setPassword(file_name):
 	print("Compressing file.")
 	compress_level = 2
-	password = getpass.getpass("Enter password for zip file: ")
-	pyminizip.compress(file_name, './', 'passwordZip.zip', password, compress_level)
+
+	attempts = 0
+
+	while attempts < 3:
+		pwd1 = getpass.getpass("Enter password: ")
+		pwd2 = getpass.getpass("Enter password again: ")
+
+		if pwd1 != pwd2:
+			if attempts == 2:
+				os.remove(file_name)
+				print("Maximum attempts exceeded. Reverting changes.")
+				exit(1)
+			print("Passwords do not match. Please try again")
+		else:
+			pyminizip.compress(file_name, './', 'passwordZip.zip', pwd1, compress_level)
+			break
+		attempts += 1
+	# password = getpass.getpass("Enter password for zip file: ")
+	# pyminizip.compress(file_name, './', 'passwordZip.zip', password, compress_level)
 
 def main():
 	zip_file = 'passwordZip.zip'
