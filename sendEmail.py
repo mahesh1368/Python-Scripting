@@ -18,7 +18,7 @@ def connect():
 
 # Composing the subject title according to SMTP rules
 def enterSubject():								
-	subject = input("\nEnter subject of the email: ")
+	subject = "Subject: "+input("\nEnter subject of the email: ")
 
 	subject += '\n'
 
@@ -26,7 +26,7 @@ def enterSubject():
 
 def composeBody():
 	address = input("\nEnter addressing part: ")
-	body = address+"\n"+input("\nEnter body here\n:")
+	body = address+"\n\n"+input("\nEnter body here\n:")
 	body += "\nThank you"
 
 	return body
