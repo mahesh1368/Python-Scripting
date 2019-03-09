@@ -84,7 +84,7 @@ def isAccountExists(file_name, pwField):
 	account, password = pwField
 	try:
 		data  = pd.read_csv(file_name)
-		print(data)
+		#print(data)
 		accounts = list(data['account'])
 
 		if account in accounts:
