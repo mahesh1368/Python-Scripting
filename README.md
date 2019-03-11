@@ -9,3 +9,8 @@ sendEmail.py
     usage command: python sendEmail.py
     
     This script allows you to send emails from gmail account.
+
+taskUpdater.py
+	usage command python taskUpdater.py
+
+	This script saves tasks to a specific file in a doc.
