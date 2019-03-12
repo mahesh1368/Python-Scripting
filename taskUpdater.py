@@ -41,16 +41,17 @@ def printOptions(file_names):
 		print("%d. %s"%(num+1, file))
 
 def chooseFile():
-	choice = int(input("Choose file number:"))
+	choice = int(input("Choose file number: "))
 	return choice
 
 def addTask(file_name):
-	print("%s name in addTask"%file_name)
+	#print("%s name in addTask"%file_name)
+	doc = docx.Document(file_name)
 	while(True):
 		para = input("Add task or enter q to quit:\n")
+		print('')
 		if para is 'q' or para is 'Q':
 			break;
-		doc = docx.Document(file_name)
 		paragraph = doc.add_paragraph(para)
 		paragraph.style = 'List Number'
 
@@ -69,24 +70,24 @@ def main():
 
 	print("File names:")
 	printOptions(file_names)
-	print('\n')
+	print('')
 	
 	file_names = createDocFileNames(file_names)
 
 	choice = chooseFile()
-	print('\n')
+	print('')
 
 	if not (choice >= 1 and choice <= len(file_names)):
 		print("Choice is out of range. Exiting program.")
 		exit(1)
 
-	print("File names:")
-	print(file_names)
+	# print("File names:")
+	# print(file_names)
 	file_name = file_names[choice-1]
 	print("%s selected\n"%file_name)
 
 	createDoc(file_name)
-	print('\n')
+	print('')
 
 	addTask(file_name)
 
